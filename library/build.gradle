@@ -5,8 +5,8 @@ plugins {
 }
 
 ext {
-    appVersionCode = 1005
-    appVersionName = '1.0.5'
+    appVersionCode = 1006
+    appVersionName = '1.0.6'
 }
 
 group = 'ir.afraapps'
@@ -53,6 +53,8 @@ android {
 }
 
 
+// test:  ./gradlew publishReleasePublicationToMavenLocal
+
 afterEvaluate {
     publishing {
         publications {
@@ -63,7 +65,7 @@ afterEvaluate {
                 // artifactId = project.name
                 // version = '1.0'
 
-                pom {
+                /*pom {
                     name = project.name
                     description = 'The basic tools for kotlin android'
                     url = "https://github.com/sobhan-jabbari/${project.name}"
@@ -85,7 +87,7 @@ afterEvaluate {
                         connection = "scm:git:github.com/sobhan-jabbari/${project.name}.git"
                         url = "https://github.com/sobhan-jabbari/${project.name}"
                     }
-                }
+                }*/
             }
         }
     }
