@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.TypedValue
@@ -22,6 +23,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.text.layoutDirection
 import ir.afraapps.kotlin.basic.R
 import ir.afraapps.kotlin.basic.util.permission.PermissionsUtil
+import org.jetbrains.anko.storageManager
 import java.util.*
 
 /**
@@ -30,8 +32,6 @@ import java.util.*
  * Created by Ali Jabbari on 10/16/19.
  */
 
-val Context.resolver: ContentResolver
-    get() = applicationContext.contentResolver
 
 fun Context.dipf(value: Int): Float = (value * resources.displayMetrics.density)
 fun Context.dipf(value: Float): Float = (value * resources.displayMetrics.density)
@@ -40,31 +40,11 @@ fun Context.spf(value: Int): Float = (value * resources.displayMetrics.scaledDen
 fun Context.spf(value: Float): Float = (value * resources.displayMetrics.scaledDensity)
 
 
-@ColorInt
-fun Context.getColorRes(@ColorRes colorRes: Int): Int {
-    return runCatching { ContextCompat.getColor(this, colorRes) }.getOrElse { 0 }
-}
+fun View.dipf(value: Int): Float = context.dipf(value)
+fun View.dipf(value: Float): Float = context.dipf(value)
 
-@ColorInt
-fun Context.getColorAttr(@AttrRes colorAttrRes: Int): Int {
-    val a = obtainStyledAttributes(TypedValue().data, intArrayOf(colorAttrRes))
-    val color = a.getColor(0, 0)
-    a.recycle()
-    return color
-}
-
-
-@SuppressLint("RestrictedApi", "ResourceType")
-fun Context.getColorStateListCompat(@ColorRes resId: Int): ColorStateList? {
-    return ColorStateListInflaterCompat.inflate(
-        resources,
-        resId,
-        null
-    )
-}
-
-@ColorInt
-fun Context.getColorPrimary(): Int = getColorAttr(R.attr.colorPrimary)
+fun View.spf(value: Int): Float = context.spf(value)
+fun View.spf(value: Float): Float = context.spf(value)
 
 
 @AnyRes
@@ -118,7 +98,15 @@ fun Context.showToast(message: String) {
 }
 
 
-fun Context.isLocaleRTL(): Boolean = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL
-
-
-
+fun Context.createOpenDocumentInitUri(dir: String): Uri? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val intent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
+        (intent.getParcelableExtra("android.provider.extra.INITIAL_URI") as? Uri)?.let { uri ->
+            var path = uri.toString().replace("/root/", "/document/")
+            path += "%3A$dir"
+            Uri.parse(path)
+        }
+    } else {
+        null
+    }
+}

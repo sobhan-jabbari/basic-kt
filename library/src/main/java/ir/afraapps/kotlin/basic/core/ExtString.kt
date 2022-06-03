@@ -1,6 +1,8 @@
 package ir.afraapps.kotlin.basic.core
 
 import android.graphics.Color
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import androidx.annotation.ColorInt
 import androidx.core.graphics.toColorInt
@@ -31,17 +33,18 @@ fun String.md5(): String {
 
 
 infix fun String.shl(bitCount: Int) = map {
-    it.toInt().shl(bitCount)
+    it.code.shl(bitCount)
 }.joinToString(separator = "") {
     it.toChar().toString()
 }
 
 infix fun String.shr(bitCount: Int) = map {
-    it.toInt().shr(bitCount)
+    it.code.shr(bitCount)
 }.joinToString(separator = "") {
     it.toChar().toString()
 }
 
+fun String.toEditable(): Editable = SpannableStringBuilder(this)
 
 fun String.fromHtmlCompat(): Spanned {
     return HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -49,3 +52,4 @@ fun String.fromHtmlCompat(): Spanned {
 
 @ColorInt
 fun String?.toColorIntOrDefault(defaultColor: Int): Int = kotlin.runCatching { Color.parseColor(this) }.getOrDefault(defaultColor)
+fun String?.toColorIntOrNull(): Int? = kotlin.runCatching { Color.parseColor(this) }.getOrNull()

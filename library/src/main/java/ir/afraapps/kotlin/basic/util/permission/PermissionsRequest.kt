@@ -1,6 +1,5 @@
-package ir.afraapps.kotlin.basic.model
+package ir.afraapps.kotlin.basic.util.permission
 
-import ir.afraapps.kotlin.basic.util.permission.PermissionCheckerFragment
 
 /**
  * In the name of Allah

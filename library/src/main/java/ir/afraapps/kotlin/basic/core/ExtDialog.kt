@@ -8,6 +8,7 @@ import android.view.View
 import androidx.annotation.*
 import androidx.core.text.layoutDirection
 import ir.afraapps.kotlin.basic.R
+import org.jetbrains.anko.colorAttr
 import java.util.*
 
 /**
@@ -18,10 +19,10 @@ import java.util.*
 
 
 @ColorInt
-fun Dialog.getColorRes(@ColorRes colorRes: Int): Int = context.getColorRes(colorRes)
+fun Dialog.color(@ColorRes colorRes: Int): Int = context.color(colorRes)
 
 @ColorInt
-fun Dialog.getColorAttr(@AttrRes colorAttrRes: Int): Int = context.getColorAttr(colorAttrRes)
+fun Dialog.getColorAttr(@AttrRes colorAttrRes: Int): Int = context.colorAttr(colorAttrRes)
 fun Dialog.getColorStateListCompat(@ColorRes resId: Int): ColorStateList? = context.getColorStateListCompat(resId)
 
 @ColorInt

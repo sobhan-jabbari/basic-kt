@@ -19,7 +19,8 @@ import androidx.core.text.TextUtilsCompat
 import androidx.core.text.layoutDirection
 import androidx.core.view.forEach
 import com.google.android.material.textfield.TextInputLayout
-import ir.afraapps.kotlin.basic.core.getColorRes
+import ir.afraapps.kotlin.basic.core.color
+import ir.afraapps.kotlin.basic.core.color
 import org.jetbrains.anko.inputMethodManager
 import org.jetbrains.anko.internals.AnkoInternals
 import java.util.*
@@ -136,7 +137,7 @@ inline var AppCompatTextView.compoundDrawableTintColorRes: Int
     get() = supportCompoundDrawablesTintList?.defaultColor ?: 0
     @SuppressLint("RestrictedApi")
     set(@ColorRes value) {
-        supportCompoundDrawablesTintList = ColorStateList.valueOf(context.getColorRes(value))
+        supportCompoundDrawablesTintList = ColorStateList.valueOf(context.color(value))
 
     }
 

@@ -5,14 +5,19 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.Size
-import ir.afraapps.kotlin.basic.core.getColorRes
+import ir.afraapps.kotlin.basic.R
+import ir.afraapps.kotlin.basic.core.color
+import ir.afraapps.kotlin.basic.core.color
 import ir.afraapps.kotlin.basic.core.getColorStateListCompat
 import ir.afraapps.kotlin.basic.core.isLocaleRTL
+import org.jetbrains.anko.colorAttr
+import kotlin.math.min
 
 /**
  * In the name of Allah
@@ -43,16 +48,18 @@ class RoundDrawable(val context: Context) : Drawable() {
         path = Path()
     }
 
+    var width: Int = -1
+    var height: Int = -1
 
     var strokeWidth: Float = 0f
 
     @ColorInt
-    var strokeColor: Int = 0
+    var strokeColor: Int = Color.TRANSPARENT
 
     @ColorRes
     var strokeColorResource: Int = 0
         set(value) {
-            strokeColor = context.getColorRes(value)
+            strokeColor = context.color(value)
         }
 
     var strokeColorStateList: ColorStateList? = null
@@ -70,7 +77,7 @@ class RoundDrawable(val context: Context) : Drawable() {
     @ColorRes
     var fillColorResource: Int = 0
         set(value) {
-            fillColor = context.getColorRes(value)
+            fillColor = context.color(value)
             fillColorStateList = null
         }
 
@@ -169,20 +176,20 @@ class RoundDrawable(val context: Context) : Drawable() {
         paint.style = Paint.Style.FILL
 
         if (shadowSize > 0f) {
-            paint.setColor(shadowColor)
-            paint.setMaskFilter(BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.NORMAL))
+            paint.color = shadowColor
+            paint.maskFilter = BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.NORMAL)
             val count = canvas.save()
             canvas.translate(shadowX, shadowY)
             drawRoundDrawable(canvas)
             canvas.restoreToCount(count)
-            paint.setMaskFilter(null)
+            paint.maskFilter = null
         }
 
 
         fillColorStateList?.let {
-            paint.setColor(it.getColorForState(state, fillColor))
+            paint.color = it.getColorForState(state, fillColor)
 
-        } ?: paint.setColor(fillColor)
+        } ?: let { paint.color = fillColor }
 
         drawRoundDrawable(canvas)
 
@@ -192,9 +199,9 @@ class RoundDrawable(val context: Context) : Drawable() {
         paint.strokeWidth = strokeWidth
 
         strokeColorStateList?.let {
-            paint.setColor(it.getColorForState(state, strokeColor))
+            paint.color = it.getColorForState(state, strokeColor)
 
-        } ?: paint.setColor(strokeColor)
+        } ?: let { paint.color = strokeColor }
 
         drawRoundDrawable(canvas)
     }
@@ -205,7 +212,7 @@ class RoundDrawable(val context: Context) : Drawable() {
             paint.alpha = alphaColor
         }
         if (isCircle) {
-            val r = Math.min(boundRound.height(), boundRound.width()) / 2f
+            val r = min(boundRound.height(), boundRound.width()) / 2f
             canvas.drawCircle(boundRound.centerX(), boundRound.centerY(), r, paint)
 
         } else {
@@ -230,10 +237,13 @@ class RoundDrawable(val context: Context) : Drawable() {
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-
-
+        paint.colorFilter = colorFilter
     }
 
+    var xfermode
+        get() = paint.xfermode
+        set(value) = let { paint.xfermode = value }
+        
 
     override fun getPadding(padding: Rect): Boolean {
         if (shadowSize <= 0 && this.padding <= 0) return super.getPadding(padding)
@@ -285,6 +295,13 @@ class RoundDrawable(val context: Context) : Drawable() {
         return true
     }
 
+    override fun getIntrinsicWidth(): Int {
+        return if (width > 0) width else super.getIntrinsicWidth()
+    }
+
+    override fun getIntrinsicHeight(): Int {
+        return if (height > 0) height else super.getIntrinsicHeight()
+    }
 
     override fun onBoundsChange(bounds: Rect) {
         boundRound.set(bounds)
@@ -425,7 +442,6 @@ class RoundDrawable(val context: Context) : Drawable() {
 
 }
 
-
 fun Context.roundDrawable(init: RoundDrawable.() -> Unit = {}): RoundDrawable {
     return RoundDrawable(this, init)
 }
@@ -436,10 +452,56 @@ fun Context.circleDrawable(init: RoundDrawable.() -> Unit = {}): RoundDrawable {
     }
 }
 
+fun Context.rippleDrawable(isUnbounded: Boolean = false, highlight: ColorStateList? = null, init: RoundDrawable.() -> Unit = {}): Drawable {
+    val drawable = RoundDrawable(this, init)
+    val h = highlight ?: ColorStateList(
+        arrayOf(
+            intArrayOf(android.R.attr.state_pressed),
+            intArrayOf()
+        ),
+        intArrayOf(
+            colorAttr(R.attr.colorControlHighlight),
+            Color.TRANSPARENT
+        )
+    )
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
+    } else {
+        drawable
+    }
+}
+
+fun Context.rippleCircleDrawable(isUnbounded: Boolean = false, highlight: ColorStateList? = null, init: RoundDrawable.() -> Unit = {}): Drawable {
+    val drawable = circleDrawable(init)
+    val h = highlight ?: ColorStateList(
+        arrayOf(
+            intArrayOf(android.R.attr.state_pressed),
+            intArrayOf()
+        ),
+        intArrayOf(
+            colorAttr(R.attr.colorControlHighlight),
+            Color.TRANSPARENT
+        )
+    )
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
+    } else {
+        drawable
+    }
+}
+
 fun View.roundDrawable(init: RoundDrawable.() -> Unit = {}): RoundDrawable {
     return context.roundDrawable(init)
 }
 
 fun View.circleDrawable(init: RoundDrawable.() -> Unit = {}): RoundDrawable {
     return context.circleDrawable(init)
+}
+
+fun View.rippleDrawable(isUnbounded: Boolean = false, highlight: ColorStateList? = null, init: RoundDrawable.() -> Unit = {}): Drawable {
+    return context.rippleDrawable(isUnbounded, highlight, init)
+}
+
+fun View.rippleCircleDrawable(isUnbounded: Boolean = false, highlight: ColorStateList? = null, init: RoundDrawable.() -> Unit = {}): Drawable {
+    return context.rippleCircleDrawable(isUnbounded, highlight, init)
 }

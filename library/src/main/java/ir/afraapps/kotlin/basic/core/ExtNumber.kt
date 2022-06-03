@@ -5,6 +5,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.displayMetrics
+import org.jetbrains.anko.sp
 import java.util.*
 import kotlin.math.abs
 
@@ -95,3 +97,21 @@ fun Float.toDip(context: Context): Int {
 fun Float.toDipf(context: Context): Float {
     return context.dipf(this)
 }
+
+fun Int.toSp(context: Context): Int {
+    return context.sp(this)
+}
+
+fun Int.toSpf(context: Context): Float {
+    return context.spf(this)
+}
+
+fun Float.toSp(context: Context): Int {
+    return context.sp(this)
+}
+
+fun Float.toSpf(context: Context): Float {
+    return context.spf(this)
+}
+
+fun Boolean.toInt(): Int = if (this) 1 else 0

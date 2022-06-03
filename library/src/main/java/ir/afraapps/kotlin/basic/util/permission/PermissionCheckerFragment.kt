@@ -8,14 +8,19 @@ import android.net.Uri
 import android.net.Uri.fromParts
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import ir.afraapps.kotlin.basic.model.PermissionsRequest
+import org.jetbrains.anko.storageManager
 
 /**
  * In the name of Allah
@@ -26,21 +31,16 @@ import ir.afraapps.kotlin.basic.model.PermissionsRequest
 class PermissionCheckerFragment : Fragment() {
 
     private var permissionsRequest: PermissionsRequest? = null
-    private var allowHandle = true
 
-    private var permissionsLuncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        handlePermissionResult(it)
-    }
+    private var needToStorage2Request = false
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    private var storageRLauncher = registerForActivityResult(StorageRContract()) {
-        handleStoragePermissionResult(it)
-    }
+    private lateinit var permissionsLuncher: ActivityResultLauncher<Array<out String>>
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private var storageR2Launcher = registerForActivityResult(StorageR2Contract()) {
-        handleStoragePermissionResult(it)
-    }
+    private var storageRLauncher: ActivityResultLauncher<Any?>? = null
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private var storageR2Launcher: ActivityResultLauncher<Any?>? = null
 
     private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it?.resultCode == Activity.RESULT_OK) {
@@ -49,8 +49,26 @@ class PermissionCheckerFragment : Fragment() {
         }
     }
 
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        permissionsLuncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            handlePermissionResult(it)
+        }
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+            storageRLauncher = registerForActivityResult(StorageRContract()) {
+                handleStoragePermissionResult(it)
+            }
+            storageR2Launcher = registerForActivityResult(StorageR2Contract()) {
+                handleStoragePermissionResult(it)
+            }
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     interface PermissionsCallback {
-        fun onPermissionsGranted(permissionsRequest: PermissionsRequest?)
+        fun onPermissionsGranted(permissionsRequest: PermissionsRequest?, uri: Uri? = null)
+        fun onPermissionsDenied(permissionsRequest: PermissionsRequest?)
     }
 
     companion object {
@@ -97,11 +115,9 @@ class PermissionCheckerFragment : Fragment() {
 
                     if (hasStoragePermissions) {
                         try {
-                            allowHandle = false
-                            storageRLauncher.launch(null)
-                            allowHandle = true
+                            storageRLauncher?.launch(null)
                         } catch (e: Exception) {
-                            storageR2Launcher.launch(null)
+                            needToStorage2Request = true
                         }
 
                     } else {
@@ -116,17 +132,41 @@ class PermissionCheckerFragment : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun handleStoragePermissionResult(uri: Uri?) {
+        if (needToStorage2Request) {
+            needToStorage2Request = false
+            storageR2Launcher?.launch(null)
+            return
+        }
+        if (uri != null) {
+            mListener?.onPermissionsGranted(permissionsRequest, uri)
+
+        } else {
+            if (permissionsRequest?.handleRationale == true) {
+                permissionsRequest!!.rationaleMethod?.invoke(permissionsRequest!!)
+            }
+            mListener?.onPermissionsDenied(permissionsRequest)
+            clean()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun handleStoragePermissionResult(granted: Boolean) {
-        if (allowHandle.not()) return
+        if (needToStorage2Request) {
+            needToStorage2Request = false
+            storageR2Launcher?.launch(null)
+            return
+        }
         if (granted) {
             mListener?.onPermissionsGranted(permissionsRequest)
 
         } else {
             if (permissionsRequest?.handleRationale == true) {
                 permissionsRequest!!.rationaleMethod?.invoke(permissionsRequest!!)
-            } else {
-                clean()
             }
+            mListener?.onPermissionsDenied(permissionsRequest)
+            clean()
         }
     }
 
@@ -144,6 +184,8 @@ class PermissionCheckerFragment : Fragment() {
             clean()
 
         } else {
+            mListener?.onPermissionsDenied(permissionsRequest)
+
             val deniedPermissions = deniedMap.keys.toTypedArray()
             permissionsRequest?.deniedPermissions = deniedPermissions
 
@@ -186,23 +228,29 @@ class PermissionCheckerFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private open class StorageRContract : ActivityResultContract<Any?, Boolean>() {
+    private class StorageRContract : ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
-            return Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                .addCategory("android.intent.category.DEFAULT")
-                .setData(Uri.parse("package:${context.applicationContext.packageName}"))
+            return context.storageManager.primaryStorageVolume.createOpenDocumentTreeIntent().apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            }
         }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-            return Environment.isExternalStorageManager()
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent?.data
         }
 
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private class StorageR2Contract : StorageRContract() {
+    private class StorageR2Contract : ActivityResultContract<Any?, Boolean>() {
         override fun createIntent(context: Context, input: Any?): Intent {
             return Intent().setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+            return Environment.isExternalStorageManager()
         }
     }
 

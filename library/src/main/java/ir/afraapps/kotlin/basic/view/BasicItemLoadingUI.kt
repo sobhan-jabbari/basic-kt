@@ -10,7 +10,7 @@ import android.view.View
  */
 
 abstract class BasicItemLoadingUI(context: Context) : AnkoUI(context) {
-    abstract fun isRefreshing(refreshing: Boolean)
-    abstract fun isFailed(failed: Boolean)
+    abstract fun isLoading(loading: Boolean)
+    abstract fun isFailed(failed: Boolean, message: String?)
     abstract fun onClickError(onClick: View.OnClickListener?)
 }

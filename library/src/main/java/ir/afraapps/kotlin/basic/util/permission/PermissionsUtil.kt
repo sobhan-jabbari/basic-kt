@@ -27,17 +27,20 @@ object PermissionsUtil {
         }.keys.toTypedArray()
 
 
-    fun hasSelfPermission(context: Context?, permissions: Array<String>): Boolean {
-        context?.let {
-            for (permission in permissions) {
-                if ((permission == Manifest.permission.READ_EXTERNAL_STORAGE || permission == Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    && SDK_INT >= Build.VERSION_CODES.R
-                ) {
-                    return Environment.isExternalStorageManager()
-                }
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
+    fun hasSelfPermission(context: Context, permissions: Array<String>): Boolean {
+        /*for (permission in permissions) {
+            if ((permission == Manifest.permission.READ_EXTERNAL_STORAGE || permission == Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && SDK_INT >= Build.VERSION_CODES.R
+            ) {
+                return Environment.isExternalStorageManager()
+            }
+            if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }*/
+        for (permission in permissions) {
+            if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false
             }
         }
         return true

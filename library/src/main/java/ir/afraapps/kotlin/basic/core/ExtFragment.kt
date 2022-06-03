@@ -11,8 +11,8 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.*
 import androidx.core.text.layoutDirection
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import ir.afraapps.kotlin.basic.R
+import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.inputMethodManager
 import java.util.*
 
@@ -42,16 +42,10 @@ fun <I, O> Fragment.registerForActivityResult(
     return registerForActivityResult(contract, callback)
 }
 
-
-@ColorInt
-fun Fragment.getColorRes(@ColorRes colorRes: Int): Int = requireContext().getColorRes(colorRes)
-
-@ColorInt
-fun Fragment.getColorAttr(@AttrRes colorAttrRes: Int): Int = requireContext().getColorAttr(colorAttrRes)
 fun Fragment.getColorStateListCompat(@ColorRes resId: Int): ColorStateList? = requireContext().getColorStateListCompat(resId)
 
 @ColorInt
-fun Fragment.getColorPrimary(): Int = getColorAttr(R.attr.colorPrimary)
+fun Fragment.getColorPrimary(): Int = requireContext().colorAttr(R.attr.colorPrimary)
 fun Fragment.getFont(@FontRes fontRes: Int): Typeface? = requireContext().getFont(fontRes)
 
 fun Fragment.getDrawableCompat(@DrawableRes id: Int): Drawable? = requireContext().getDrawableCompat(id)
@@ -59,5 +53,9 @@ fun Fragment.getDrawableCompat(@DrawableRes id: Int): Drawable? = requireContext
 fun Fragment.showToast(@StringRes restId: Int) = requireContext().showToast(restId)
 fun Fragment.showToast(message: String) = requireContext().showToast(message)
 
+
+fun Fragment.isGrantedPermission(permission: String): Boolean {
+    return context?.isGrantedPermission(permission) ?: false
+}
 
 fun Fragment.isLocaleRTL(): Boolean = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL

@@ -1,4 +1,4 @@
-package ir.afraapps.kotlin.basic.model
+package ir.afraapps.kotlin.basic.util.permission
 
 /**
  * In the name of Allah
