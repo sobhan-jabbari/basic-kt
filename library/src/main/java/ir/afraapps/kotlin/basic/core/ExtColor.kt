@@ -14,6 +14,7 @@ import androidx.core.content.res.ColorStateListInflaterCompat
 import androidx.fragment.app.Fragment
 import ir.afraapps.kotlin.basic.R
 import ir.afraapps.kotlin.basic.view.AnkoUI
+import org.jetbrains.anko.colorAttr
 
 /**
  * In the name of Allah
@@ -121,5 +122,5 @@ fun Context.getColorStateListCompat(@ColorRes resId: Int): ColorStateList? {
 }
 
 @ColorInt
-fun Context.getColorPrimary(): Int = getColorAttr(R.attr.colorPrimary)
+fun Context.getColorPrimary(): Int = colorAttr(R.attr.colorPrimary)
 
