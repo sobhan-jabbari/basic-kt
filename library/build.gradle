@@ -5,8 +5,8 @@ plugins {
 }
 
 ext {
-    appVersionCode = 1004
-    appVersionName = '1.0.4'
+    appVersionCode = 1005
+    appVersionName = '1.0.5'
 }
 
 group = 'ir.afraapps'
