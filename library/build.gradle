@@ -5,8 +5,8 @@ plugins {
 }
 
 ext {
-    appVersionCode = 1003
-    appVersionName = '1.0.3'
+    appVersionCode = 1004
+    appVersionName = '1.0.4'
 }
 
 group = 'ir.afraapps'
@@ -49,8 +49,9 @@ android {
         abortOnError false
     }
     namespace 'ir.afraapps.kotlin.basic'
-    
+
 }
+
 
 
 afterEvaluate {
