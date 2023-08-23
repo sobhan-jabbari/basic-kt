@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("maven-publish")
+    // id("maven-publish")
 }
 
 val appVersionCode: Int by rootProject.extra
@@ -38,7 +38,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = "1.8"
     }
     lint {
         abortOnError = false
@@ -49,43 +49,43 @@ android {
 
 // test: ./gradlew clean -xtest -xlint assemble publishToMavenLocal
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            create<MavenPublication>("release") {
-                from(components.findByName("release"))
-                // groupId = project.group
-                // artifactId = project.name
-                // version = '1.0'
+// afterEvaluate {
+/*publishing {
+    publications {
+        // Creates a Maven publication called "release".
+        create<MavenPublication>("release") {
+            from(components.findByName("release"))
+            groupId = project.group as String
+            artifactId = project.name
+            version = project.version as String
 
-                /*pom {
-                name = project.name
-                description = 'The basic tools for kotlin android'
-                url = "https://github.com/sobhan-jabbari/${project.name}"
+            *//*pom {
+            name = project.name
+            description = 'The basic tools for kotlin android'
+            url = "https://github.com/sobhan-jabbari/${project.name}"
 
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
+            licenses {
+                license {
+                    name = 'The Apache License, Version 2.0'
+                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                 }
-                developers {
-                    developer {
-                        id = 'sobhan-jabbari'
-                        name = 'Ali Jabbari'
-                        email = 'sobhan.jabbari@gmail.com'
-                    }
-                }
-                scm {
-                    connection = "scm:git:github.com/sobhan-jabbari/${project.name}.git"
-                    url = "https://github.com/sobhan-jabbari/${project.name}"
-                }
-            }*/
             }
+            developers {
+                developer {
+                    id = 'sobhan-jabbari'
+                    name = 'Ali Jabbari'
+                    email = 'sobhan.jabbari@gmail.com'
+                }
+            }
+            scm {
+                connection = "scm:git:github.com/sobhan-jabbari/${project.name}.git"
+                url = "https://github.com/sobhan-jabbari/${project.name}"
+            }
+        }*//*
         }
     }
-}
+}*/
+// }
 
 
 dependencies {
