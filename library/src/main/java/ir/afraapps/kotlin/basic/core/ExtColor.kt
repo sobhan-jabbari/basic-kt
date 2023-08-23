@@ -22,17 +22,6 @@ import org.jetbrains.anko.colorAttr
  * Created by Ali Jabbari on 10/16/19.
  */
 
-
-@ColorInt
-@Deprecated("deprecated", ReplaceWith("colorAttr(Int)"))
-fun Context.getColorAttr(@AttrRes colorAttrRes: Int): Int {
-    val a = obtainStyledAttributes(TypedValue().data, intArrayOf(colorAttrRes))
-    val color = a.getColor(0, 0)
-    a.recycle()
-    return color
-}
-
-
 @ColorInt
 fun Context.color(@ColorRes colorRes: Int): Int = colorOr(colorRes, 0)
 

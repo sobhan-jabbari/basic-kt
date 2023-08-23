@@ -27,15 +27,15 @@ task("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
 
-val appVersionCode by extra(1012)
-val appVersionName by extra("1.0.12")
+val appVersionCode by extra(1013)
+val appVersionName by extra("1.0.13")
 
 
 task("backup", Zip::class) {
     dependsOn("clean")
     from(projectDir)
     val folders =
-            listOf(".git/**", ".gradle/**", ".idea/**", "build/**", "app/release/**", "app/build/**", "app/src/androidTest/**", "app/src/test/**")
+        listOf(".git/**", ".gradle/**", ".idea/**", "build/**", "app/release/**", "app/build/**", "app/src/androidTest/**", "app/src/test/**")
     excludes.addAll(folders)
     val date = Date()
     val sdf = SimpleDateFormat("yyyy.MM.dd_HH.mm")
