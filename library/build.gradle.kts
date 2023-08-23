@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    // id("maven-publish")
+    id("maven-publish")
 }
 
 val appVersionCode: Int by rootProject.extra
@@ -50,16 +50,19 @@ android {
 // test: ./gradlew clean -xtest -xlint assemble publishToMavenLocal
 
 // afterEvaluate {
-/*publishing {
+publishing {
     publications {
         // Creates a Maven publication called "release".
         create<MavenPublication>("release") {
-            from(components.findByName("release"))
             groupId = project.group as String
             artifactId = project.name
             version = project.version as String
 
-            *//*pom {
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            /*pom {
             name = project.name
             description = 'The basic tools for kotlin android'
             url = "https://github.com/sobhan-jabbari/${project.name}"
@@ -81,10 +84,10 @@ android {
                 connection = "scm:git:github.com/sobhan-jabbari/${project.name}.git"
                 url = "https://github.com/sobhan-jabbari/${project.name}"
             }
-        }*//*
+        }*/
         }
     }
-}*/
+}
 // }
 
 
