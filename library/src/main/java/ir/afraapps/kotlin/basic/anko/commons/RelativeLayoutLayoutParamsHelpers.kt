@@ -18,11 +18,31 @@
 
 package org.jetbrains.anko
 
-import android.os.Build
 import android.view.View
-import android.widget.RelativeLayout.*
+import android.widget.RelativeLayout.ABOVE
+import android.widget.RelativeLayout.ALIGN_BASELINE
+import android.widget.RelativeLayout.ALIGN_BOTTOM
+import android.widget.RelativeLayout.ALIGN_END
+import android.widget.RelativeLayout.ALIGN_LEFT
+import android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM
+import android.widget.RelativeLayout.ALIGN_PARENT_END
+import android.widget.RelativeLayout.ALIGN_PARENT_LEFT
+import android.widget.RelativeLayout.ALIGN_PARENT_RIGHT
+import android.widget.RelativeLayout.ALIGN_PARENT_START
+import android.widget.RelativeLayout.ALIGN_PARENT_TOP
+import android.widget.RelativeLayout.ALIGN_RIGHT
+import android.widget.RelativeLayout.ALIGN_START
+import android.widget.RelativeLayout.ALIGN_TOP
+import android.widget.RelativeLayout.BELOW
+import android.widget.RelativeLayout.CENTER_HORIZONTAL
+import android.widget.RelativeLayout.CENTER_IN_PARENT
+import android.widget.RelativeLayout.CENTER_VERTICAL
+import android.widget.RelativeLayout.END_OF
+import android.widget.RelativeLayout.LEFT_OF
+import android.widget.RelativeLayout.LayoutParams
+import android.widget.RelativeLayout.RIGHT_OF
+import android.widget.RelativeLayout.START_OF
 import androidx.annotation.IdRes
-import androidx.annotation.RequiresApi
 
 /**
  * Place the current View above [view].
@@ -74,7 +94,6 @@ inline fun LayoutParams.leftOf(view: View) {
 /**
  * Place the current View to the start of [view].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.startOf(view: View) {
     val id = view.id
     if (id == View.NO_ID) throw AnkoException("Id is not set for $view")
@@ -93,7 +112,6 @@ inline fun LayoutParams.rightOf(view: View) {
 /**
  * Place the current View to the end of [view].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.endOf(view: View) {
     val id = view.id
     if (id == View.NO_ID) throw AnkoException("Id is not set for $view")
@@ -112,7 +130,6 @@ inline fun LayoutParams.sameLeft(view: View) {
 /**
  * Set the current View start attribute the same as for [view].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.sameStart(view: View) {
     val id = view.id
     if (id == View.NO_ID) throw AnkoException("Id is not set for $view")
@@ -140,7 +157,6 @@ inline fun LayoutParams.sameRight(view: View) {
 /**
  * Set the current View end attribute the same as for [view].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.sameEnd(view: View) {
     val id = view.id
     if (id == View.NO_ID) throw AnkoException("Id is not set for $view")
@@ -186,7 +202,6 @@ inline fun LayoutParams.leftOf(@IdRes id: Int) = addRule(LEFT_OF, id)
 /**
  * Place the current View to the start of the View with a given [id].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.startOf(@IdRes id: Int): Unit = addRule(START_OF, id)
 
 /**
@@ -197,7 +212,6 @@ inline fun LayoutParams.rightOf(@IdRes id: Int) = addRule(RIGHT_OF, id)
 /**
  * Place the current View to the end of the View with a given [id].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.endOf(@IdRes id: Int): Unit = addRule(END_OF, id)
 
 /**
@@ -208,7 +222,6 @@ inline fun LayoutParams.sameLeft(@IdRes id: Int) = addRule(ALIGN_LEFT, id)
 /**
  * Set the current View start attribute the same as for View with a given [id].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.sameStart(@IdRes id: Int): Unit = addRule(ALIGN_START, id)
 
 /**
@@ -224,7 +237,6 @@ inline fun LayoutParams.sameRight(@IdRes id: Int) = addRule(ALIGN_RIGHT, id)
 /**
  * Set the current View end attribute the same as for View with a given [id].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.sameEnd(@IdRes id: Int): Unit = addRule(ALIGN_END, id)
 
 /**
@@ -235,13 +247,11 @@ inline fun LayoutParams.sameBottom(@IdRes id: Int) = addRule(ALIGN_BOTTOM, id)
 /**
  * Align the current View's start edge with another child's start edge.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.alignStart(@IdRes id: Int): Unit = addRule(ALIGN_START, id)
 
 /**
  * Align the current View's end edge with another child's end edge.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.alignEnd(@IdRes id: Int): Unit = addRule(ALIGN_END, id)
 
 /**
@@ -282,13 +292,11 @@ inline fun LayoutParams.centerInParent() = addRule(CENTER_IN_PARENT)
 /**
  * Align the current View's start edge with its parent's start edge.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.alignParentStart(): Unit = addRule(ALIGN_PARENT_START)
 
 /**
  * Align the current View's end edge with its parent's end edge.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 inline fun LayoutParams.alignParentEnd(): Unit = addRule(ALIGN_PARENT_END)
 
 /**

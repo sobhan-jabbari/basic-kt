@@ -188,20 +188,7 @@ object AnkoInternals {
 
     @JvmStatic
     inline fun <T> useCursor(cursor: Cursor, f: (Cursor) -> T): T {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            // Closeable only added in API 16
-            cursor.use(f)
-        } else {
-            try {
-                f(cursor)
-            } finally {
-                try {
-                    cursor.close()
-                } catch (e: Exception) {
-                    // Do nothing
-                }
-            }
-        }
+        return cursor.use(f)
     }
 
     @JvmStatic

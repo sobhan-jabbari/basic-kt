@@ -13,6 +13,7 @@ fun Closeable.safeClose() {
     try {
         close()
     } catch (e: Exception) {
+        /*ignore*/
     }
 }
 
@@ -20,6 +21,7 @@ fun Flushable.safeFlush() {
     try {
         flush()
     } catch (e: Exception) {
+        /*ignore*/
     }
 }
 

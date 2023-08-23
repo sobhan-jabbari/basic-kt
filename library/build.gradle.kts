@@ -4,10 +4,8 @@ plugins {
     id("maven-publish")
 }
 
-
-val appVersionCode = 1008
-val appVersionName = "1.0.8"
-
+val appVersionCode: Int by rootProject.extra
+val appVersionName: String by rootProject.extra
 
 group = "ir.afraapps"
 version = appVersionName

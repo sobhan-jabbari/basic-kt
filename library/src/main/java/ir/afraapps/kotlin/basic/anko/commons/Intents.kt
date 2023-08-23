@@ -87,12 +87,7 @@ inline fun Intent.clearTop(): Intent = apply { addFlags(Intent.FLAG_ACTIVITY_CLE
  * @return the same intent with the flag applied.
  */
 inline fun Intent.newDocument(): Intent = apply {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-    } else {
-        @Suppress("DEPRECATION")
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-    }
+    addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
 }
 
 /**

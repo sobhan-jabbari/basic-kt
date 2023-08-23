@@ -517,11 +517,7 @@ fun Context.rippleDrawable(isUnbounded: Boolean = false, highlight: ColorStateLi
             Color.TRANSPARENT
         )
     )
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
-    } else {
-        drawable
-    }
+    return RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
 }
 
 fun Context.rippleCircleDrawable(isUnbounded: Boolean = false, highlight: ColorStateList? = null, init: RoundDrawable.() -> Unit = {}): Drawable {
@@ -536,11 +532,7 @@ fun Context.rippleCircleDrawable(isUnbounded: Boolean = false, highlight: ColorS
             Color.TRANSPARENT
         )
     )
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
-    } else {
-        drawable
-    }
+    return RippleDrawable(h, if (isUnbounded) null else drawable, if (isUnbounded) null else drawable)
 }
 
 fun View.roundDrawable(init: RoundDrawable.() -> Unit = {}): RoundDrawable {
