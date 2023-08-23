@@ -50,9 +50,9 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = project.group as String
-                artifactId = project.name
-                version = project.version as String
+                groupId = "ir.afraapps"
+                artifactId = "basic-kt"
+                version = appVersionName
 
 
                 pom {
