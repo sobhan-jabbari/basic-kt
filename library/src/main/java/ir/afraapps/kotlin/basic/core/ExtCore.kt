@@ -39,4 +39,4 @@ fun <T : Any> T.getPrivateProperty(variableName: String): Any? {
     }
 }
 
-fun <T : Any> T.isLocaleRTL(): Boolean = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL
+fun isLocaleRTL(): Boolean = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL

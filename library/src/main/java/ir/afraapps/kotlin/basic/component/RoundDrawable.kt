@@ -11,12 +11,18 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.Size
+import androidx.core.graphics.withTranslation
 import ir.afraapps.kotlin.basic.R
-import ir.afraapps.kotlin.basic.core.color
+import ir.afraapps.kotlin.basic.core.allIsSameValue
 import ir.afraapps.kotlin.basic.core.color
 import ir.afraapps.kotlin.basic.core.getColorStateListCompat
 import ir.afraapps.kotlin.basic.core.isLocaleRTL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.colorAttr
+import java.lang.Float.max
 import kotlin.math.min
 
 /**
@@ -122,23 +128,43 @@ class RoundDrawable(val context: Context) : Drawable() {
     }
 
     fun startLocaleCorner(radius: Float) {
-        if (context.isLocaleRTL()) rightCorner(radius) else leftCorner(radius)
+        if (isLocaleRTL()) rightCorner(radius) else leftCorner(radius)
     }
 
     fun endLocaleCorner(radius: Float) {
-        if (context.isLocaleRTL()) leftCorner(radius) else rightCorner(radius)
+        if (isLocaleRTL()) leftCorner(radius) else rightCorner(radius)
     }
-
 
     var isCircle: Boolean = false
 
+    var shadowType: Int = ShadowType.BLUR
     var shadowColor: Int = 0x30000000
     var shadowSize = 0f
     var shadowX = 2f
     var shadowY = 5f
 
-    var padding = 0
+    var paddingLeft = 0
+    var paddingTop = 0
+    var paddingRight = 0
+    var paddingBottom = 0
 
+    fun setPadding(padding: Int) {
+        paddingLeft = padding
+        paddingTop = padding
+        paddingRight = padding
+        paddingBottom = padding
+    }
+
+    private val bitmapMatrix = Matrix()
+
+    var bitmap: Bitmap? = null
+        set(value) {
+            field = value
+            val b = bounds
+            if (b.isEmpty.not()) {
+                prepareBoundAndPath(b)
+            }
+        }
 
     private fun mutateRoundConstantState(): RoundDrawableState {
         return RoundDrawableState(context, drawableState)
@@ -157,7 +183,10 @@ class RoundDrawable(val context: Context) : Drawable() {
             it.shadowSize = shadowSize
             it.shadowX = shadowX
             it.shadowY = shadowY
-            it.padding = padding
+            it.paddingLeft = paddingLeft
+            it.paddingTop = paddingTop
+            it.paddingRight = paddingRight
+            it.paddingBottom = paddingBottom
             it
         }
     }
@@ -173,24 +202,34 @@ class RoundDrawable(val context: Context) : Drawable() {
     override fun draw(canvas: Canvas) {
 
         //----------------------------------------------------------
-        paint.style = Paint.Style.FILL
+        paint.style = if (strokeWidth > 0f) Paint.Style.FILL_AND_STROKE else Paint.Style.FILL
+        val nPath = path
 
-        if (shadowSize > 0f) {
+        if (shadowSize > 0f && nPath.isEmpty.not()) {
             paint.color = shadowColor
-            paint.maskFilter = BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.NORMAL)
-            val count = canvas.save()
-            canvas.translate(shadowX, shadowY)
-            drawRoundDrawable(canvas)
-            canvas.restoreToCount(count)
+            if (shadowType == ShadowType.BLUR) {
+                paint.maskFilter = BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.NORMAL)
+            }
+            canvas.withTranslation(shadowX, shadowY) {
+                if (bitmap != null) {
+                    canvas.drawPath(path, paint)
+                } else {
+                    drawRoundDrawable(canvas)
+                }
+            }
             paint.maskFilter = null
         }
 
+        //----------------------------------------------------------
+        if (bitmap != null) {
+            if (nPath.isEmpty.not()) {
+                canvas.drawBitmap(bitmap!!, bitmapMatrix, null)
+            }
+            return
+        }
 
-        fillColorStateList?.let {
-            paint.color = it.getColorForState(state, fillColor)
-
-        } ?: let { paint.color = fillColor }
-
+        //----------------------------------------------------------
+        paint.color = fillColorStateList?.getColorForState(state, fillColor) ?: fillColor
         drawRoundDrawable(canvas)
 
         //----------------------------------------------------------
@@ -200,7 +239,6 @@ class RoundDrawable(val context: Context) : Drawable() {
 
         strokeColorStateList?.let {
             paint.color = it.getColorForState(state, strokeColor)
-
         } ?: let { paint.color = strokeColor }
 
         drawRoundDrawable(canvas)
@@ -232,6 +270,7 @@ class RoundDrawable(val context: Context) : Drawable() {
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSLUCENT
     }
@@ -240,48 +279,34 @@ class RoundDrawable(val context: Context) : Drawable() {
         paint.colorFilter = colorFilter
     }
 
-    var xfermode
+    /*var xfermode
         get() = paint.xfermode
-        set(value) = let { paint.xfermode = value }
-        
+        set(value) = let { paint.xfermode = value }*/
 
-    override fun getPadding(padding: Rect): Boolean {
-        if (shadowSize <= 0 && this.padding <= 0) return super.getPadding(padding)
-        padding.set(0, 0, 0, 0)
-        if (shadowSize > 0) {
-            val leftOffset = (shadowSize - shadowX).toInt()
-            val rightOffset = (shadowSize + shadowX).toInt()
-            val topOffset = (shadowSize - shadowY).toInt()
-            val bottomOffset = (shadowSize + shadowY).toInt()
-            padding.set(leftOffset, topOffset, rightOffset, bottomOffset)
-        }
-
-        if (this.padding > 0) {
-            val halfPadding = this.padding / 2
-            padding.left += halfPadding
-            padding.right += halfPadding
-            padding.top += halfPadding
-            padding.bottom += halfPadding
-        }
-
-        return true
+    private fun hasPadding(): Boolean {
+        return paddingLeft > 0 || paddingTop > 0 || paddingRight > 0 || paddingBottom > 0
     }
 
 
-    /*override fun getOpticalInsets(): Insets {
-        if (shadowSize <= 0 || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return super.getOpticalInsets()
-        val contentInsets = super.getOpticalInsets()
-        val leftOffset = (shadowSize - shadowX).takeIf { it >= 0f }?.toInt() ?: 0
-        val rightOffset = (shadowSize + shadowX).toInt()
-        val topOffset = (shadowSize - shadowY).takeIf { it >= 0f }?.toInt() ?: 0
-        val bottomOffset = (shadowSize + shadowY).toInt()
-        return Insets.of(
-            contentInsets.left + leftOffset,
-            contentInsets.top + topOffset,
-            contentInsets.right + rightOffset,
-            contentInsets.bottom + bottomOffset
-        )
-    }*/
+    override fun getPadding(padding: Rect): Boolean {
+        var consumed = false
+        padding.set(0, 0, 0, 0)
+        if (shadowSize > 0) {
+            consumed = true
+            padding.left += Math.max(shadowSize - shadowX, 0f).toInt()
+            padding.right += (shadowSize + shadowX).toInt()
+            padding.top += Math.max(shadowSize - shadowY, 0f).toInt()
+            padding.bottom += (shadowSize + shadowY).toInt()
+        }
+        if (hasPadding()) {
+            consumed = true
+            padding.left += paddingLeft
+            padding.right += paddingRight
+            padding.top += paddingTop
+            padding.bottom += paddingBottom
+        }
+        return consumed
+    }
 
 
     override fun onStateChange(state: IntArray): Boolean {
@@ -304,57 +329,54 @@ class RoundDrawable(val context: Context) : Drawable() {
     }
 
     override fun onBoundsChange(bounds: Rect) {
+        prepareBoundAndPath(bounds)
+    }
+
+    private fun prepareBoundAndPath(bounds: Rect) {
         boundRound.set(bounds)
         if (strokeWidth > 0f) {
-            val padding = strokeWidth / 2f
-            boundRound.left += padding
-            boundRound.top += padding
-            boundRound.right -= padding
-            boundRound.bottom -= padding
+            val borderHalf = strokeWidth / 2f
+            boundRound.left += borderHalf
+            boundRound.top += borderHalf
+            boundRound.right -= borderHalf
+            boundRound.bottom -= borderHalf
         }
         if (shadowSize > 0f) {
-            val leftOffset = (shadowSize - shadowX)
-            val rightOffset = (shadowSize + shadowX)
-            val topOffset = (shadowSize - shadowY)
-            val bottomOffset = (shadowSize + shadowY)
-            boundRound.left += leftOffset
-            boundRound.top += topOffset
-            boundRound.right -= rightOffset
-            boundRound.bottom -= bottomOffset
+            boundRound.left += max(shadowSize - shadowX, 0f)
+            boundRound.top += max(shadowSize - shadowY, 0f)
+            boundRound.right -= min(shadowSize + shadowX, bounds.width().toFloat())
+            boundRound.bottom -= min(shadowSize + shadowY, bounds.height().toFloat())
         }
         generatePath(boundRound)
     }
 
 
-    override fun getOutline(outline: Outline) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (isCircle) {
-                val padding = strokeWidth / 2f
-                outline.setOval(
-                    (boundRound.left - padding).toInt(),
-                    (boundRound.top - padding).toInt(),
-                    (boundRound.right + padding).toInt(),
-                    (boundRound.bottom + padding).toInt()
-                )
-            } else {
-
-                val firstRadius = radiuses[0]
-                if (radiuses.all { it == firstRadius }) {
-                    outline.setRoundRect(boundRound.left.toInt(), boundRound.top.toInt(), boundRound.right.toInt(), boundRound.bottom.toInt(), radius)
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        outline.setPath(path)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        outline.setConvexPath(path)
+    private fun generatePath(bounds: RectF) {
+        path.reset()
+        bitmapMatrix.reset()
+        if (bitmap == null) {
+            path.addRoundRect(bounds, getCorrectRadius(), Path.Direction.CW)
+        } else {
+            val b = bitmap!!
+            val nPath = Path()
+            GlobalScope.launch(Dispatchers.IO) {
+                bitmapMatrix.setScale(bounds.width() / b.width.toFloat(), bounds.height() / b.height.toFloat())
+                bitmapMatrix.postTranslate(bounds.left, bounds.top)
+                for (y in 0 until b.height) {
+                    for (x in 0 until b.width) {
+                        val pixel = b.getPixel(x, y)
+                        if (pixel == 0) continue
+                        nPath.addRect(x.toFloat(), y.toFloat(), x + 1f, y + 1f, Path.Direction.CCW)
                     }
                 }
+                nPath.transform(bitmapMatrix)
+                path.set(nPath)
+                withContext(Dispatchers.Main) {
+                    invalidateSelf()
+                }
             }
-
-            outline.alpha = alpha / 255.0f
         }
     }
-
 
     private fun getCorrectRadius(): FloatArray {
         val tl = radiuses[0].takeIf { it >= 0f } ?: 0f
@@ -364,9 +386,34 @@ class RoundDrawable(val context: Context) : Drawable() {
         return floatArrayOf(tl, tl, tr, tr, br, br, bl, bl)
     }
 
-    private fun generatePath(bounds: RectF) {
-        path.reset()
-        path.addRoundRect(bounds, getCorrectRadius(), Path.Direction.CW)
+    override fun getOutline(outline: Outline) {
+        if (isCircle) {
+            val borderHalf = strokeWidth / 2f
+            outline.setOval(
+                (boundRound.left - borderHalf).toInt(),
+                (boundRound.top - borderHalf).toInt(),
+                (boundRound.right + borderHalf).toInt(),
+                (boundRound.bottom + borderHalf).toInt()
+            )
+
+        } else if (bitmap != null || radiuses.allIsSameValue().not()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                outline.setPath(path)
+            } else {
+                @Suppress("DEPRECATION")
+                outline.setConvexPath(path)
+            }
+        } else {
+            outline.setRoundRect(boundRound.left.toInt(), boundRound.top.toInt(), boundRound.right.toInt(), boundRound.bottom.toInt(), radius)
+        }
+
+        outline.alpha = alpha / 255.0f
+    }
+
+
+    object ShadowType {
+        const val BLUR = 1
+        const val SOLID = 2
     }
 
 
@@ -400,7 +447,10 @@ class RoundDrawable(val context: Context) : Drawable() {
         var shadowX = 2f
         var shadowY = 5f
 
-        var padding = 0
+        var paddingLeft = 0
+        var paddingTop = 0
+        var paddingRight = 0
+        var paddingBottom = 0
 
         init {
             origin?.let {
@@ -421,7 +471,10 @@ class RoundDrawable(val context: Context) : Drawable() {
                 it.shadowColor = shadowColor
                 it.shadowX = shadowX
                 it.shadowY = shadowY
-                it.padding = padding
+                it.paddingLeft = paddingLeft
+                it.paddingTop = paddingTop
+                it.paddingRight = paddingRight
+                it.paddingBottom = paddingBottom
             }
         }
 

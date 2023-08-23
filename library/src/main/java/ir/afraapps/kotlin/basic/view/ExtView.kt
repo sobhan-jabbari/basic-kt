@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.*
 import androidx.appcompat.widget.AppCompatImageView
@@ -36,6 +37,14 @@ fun View.closeSoftKeyboard() {
     context.inputMethodManager.hideSoftInputFromWindow(
         windowToken,
         InputMethodManager.RESULT_UNCHANGED_SHOWN
+    )
+}
+
+fun EditText.showSoftKeyboard() {
+    requestFocus()
+    context.inputMethodManager.showSoftInput(
+        this,
+        InputMethodManager.SHOW_FORCED
     )
 }
 

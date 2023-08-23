@@ -7,6 +7,7 @@ import android.text.Spanned
 import androidx.annotation.ColorInt
 import androidx.core.graphics.toColorInt
 import androidx.core.text.HtmlCompat
+import org.json.JSONObject
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -31,18 +32,17 @@ fun String.md5(): String {
     return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 }
 
+fun String.toJsonObjectOrNull(): JSONObject? {
+    return kotlin.runCatching { JSONObject(this) }.getOrNull()
+}
 
 infix fun String.shl(bitCount: Int) = map {
     it.code.shl(bitCount)
-}.joinToString(separator = "") {
-    it.toChar().toString()
-}
+}.joinToString(separator = "") { it.toChar().toString() }
 
 infix fun String.shr(bitCount: Int) = map {
     it.code.shr(bitCount)
-}.joinToString(separator = "") {
-    it.toChar().toString()
-}
+}.joinToString(separator = "") { it.toChar().toString() }
 
 fun String.toEditable(): Editable = SpannableStringBuilder(this)
 

@@ -9,8 +9,6 @@ import java.nio.charset.Charset
  *
  * Created by Ali Jabbari on 10/16/19.
  */
-
-
 fun URLConnection.writeData(data: String) {
     val os = outputStream
     val writer = BufferedWriter(OutputStreamWriter(os, Charset.forName("UTF-8")))

@@ -6,9 +6,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.appbar.AppBarLayout
 import ir.afraapps.kotlin.basic.view.AnkoUI
-import ir.afraapps.kotlin.basic.view.OnSingleClickListener
+import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.wrapContent
 
 /**
@@ -17,13 +19,18 @@ import org.jetbrains.anko.wrapContent
  * Created by Ali Jabbari on 4/24/20.
  */
 
-
 fun View.onClick(action: ((v: View) -> Unit)?) {
     setOnClickListener(action)
 }
 
 fun View.onSingleClick(action: (v: View) -> Unit) {
-    setOnClickListener(OnSingleClickListener(action))
+    setOnClickListener(object : View.OnClickListener {
+        override fun onClick(v: View) {
+            isClickable = false
+            action(v)
+            postDelayed({ isClickable = true }, 700)
+        }
+    })
 }
 
 fun View.onLongClick(action: (v: View) -> Boolean) {
@@ -72,6 +79,31 @@ fun <T : AnkoUI> ConstraintLayout.includeUI(ui: T, params: ConstraintLayout.Layo
             is ViewGroup.MarginLayoutParams -> ConstraintLayout.LayoutParams(p)
             is ViewGroup.LayoutParams -> ConstraintLayout.LayoutParams(p)
             else -> ConstraintLayout.LayoutParams(wrapContent, wrapContent)
+        }
+    }
+    addView(ui.root, lp.apply(params))
+    return ui
+}
+
+fun <T : AnkoUI> CoordinatorLayout.includeUI(ui: T, params: CoordinatorLayout.LayoutParams.() -> Unit = {}): T {
+    val lp = ui.root.layoutParams.let { p ->
+        when (p) {
+            is ViewGroup.MarginLayoutParams -> CoordinatorLayout.LayoutParams(p)
+            is ViewGroup.LayoutParams -> CoordinatorLayout.LayoutParams(p)
+            else -> CoordinatorLayout.LayoutParams(wrapContent, wrapContent)
+        }
+    }
+    addView(ui.root, lp.apply(params))
+    return ui
+}
+
+fun <T : AnkoUI> AppBarLayout.includeUI(ui: T, width: Int, params: AppBarLayout.LayoutParams.() -> Unit = {}): T {
+    val lp = ui.root.layoutParams.let { p ->
+        when (p) {
+            is LinearLayout.LayoutParams -> AppBarLayout.LayoutParams(p)
+            is ViewGroup.MarginLayoutParams -> AppBarLayout.LayoutParams(p)
+            is ViewGroup.LayoutParams -> AppBarLayout.LayoutParams(p)
+            else -> AppBarLayout.LayoutParams(width, wrapContent)
         }
     }
     addView(ui.root, lp.apply(params))

@@ -50,9 +50,6 @@ fun Fragment.getFont(@FontRes fontRes: Int): Typeface? = requireContext().getFon
 
 fun Fragment.getDrawableCompat(@DrawableRes id: Int): Drawable? = requireContext().getDrawableCompat(id)
 
-fun Fragment.showToast(@StringRes restId: Int) = requireContext().showToast(restId)
-fun Fragment.showToast(message: String) = requireContext().showToast(message)
-
 
 fun Fragment.isGrantedPermission(permission: String): Boolean {
     return context?.isGrantedPermission(permission) ?: false

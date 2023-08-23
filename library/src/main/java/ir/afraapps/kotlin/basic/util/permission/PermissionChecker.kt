@@ -1,12 +1,22 @@
 package ir.afraapps.kotlin.basic.util.permission
 
-import android.Manifest
+import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.Settings
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import ir.afraapps.kotlin.basic.core.isGrantedPermission
 
 /**
  * In the name of Allah
@@ -18,7 +28,7 @@ fun Context.runIfPermissions(
     vararg permissions: String,
     callback: () -> Unit
 ): Boolean {
-    if (PermissionsUtil.hasSelfPermission(this, arrayOf(*permissions))) {
+    if (isGrantedPermission(*permissions)) {
         callback.invoke()
         return true
     }
@@ -31,7 +41,7 @@ fun Fragment.runIfPermissions(
     callback: () -> Unit
 ): Boolean {
     context?.let {
-        if (PermissionsUtil.hasSelfPermission(it, arrayOf(*permissions))) {
+        if (it.isGrantedPermission(*permissions)) {
             callback.invoke()
             return true
         }
@@ -40,148 +50,222 @@ fun Fragment.runIfPermissions(
 }
 
 
-fun Context.runWithPermissions(
+fun FragmentActivity.runWithPermissions(
     vararg permissions: String,
     options: PermissionsOptions = PermissionsOptions(),
     deniedCallback: () -> Unit = {},
-    grantedCallback: (Uri?) -> Unit
+    grantedCallback: () -> Unit
 ): Boolean {
-    return runWithPermissionsHandler(this, permissions, grantedCallback, deniedCallback, options)
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        return true
+    } else {
+        val rationale: (String) -> Boolean = { shouldShowRequestPermissionRationale(it) }
+        return launchPermissionRequest(
+            this,
+            activityResultRegistry,
+            arrayOf(*permissions),
+            rationale,
+            grantedCallback, deniedCallback, options
+        )
+    }
 }
-
-fun Context.runWithStoragePermissions(
-    options: PermissionsOptions = PermissionsOptions(),
-    deniedCallback: () -> Unit = {},
-    grantedCallback: (Uri?) -> Unit
-): Boolean {
-    return runWithPermissionsHandler(
-        this,
-        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-        grantedCallback,
-        deniedCallback,
-        options
-    )
-}
-
 
 fun Fragment.runWithPermissions(
     vararg permissions: String,
     options: PermissionsOptions = PermissionsOptions(),
     deniedCallback: () -> Unit = {},
-    grantedCallback: (Uri?) -> Unit
+    grantedCallback: () -> Unit
 ): Boolean {
-    return runWithPermissionsHandler(this, permissions, grantedCallback, deniedCallback, options)
-}
-
-fun Fragment.runWithStoragePermissions(
-    options: PermissionsOptions = PermissionsOptions(),
-    deniedCallback: () -> Unit = {},
-    grantedCallback: (Uri?) -> Unit
-): Boolean {
-    return runWithPermissionsHandler(
-        this,
-        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-        grantedCallback,
-        deniedCallback,
-        options
-    )
-}
-
-
-fun Context.checkSelfPermissions(vararg permissions: String): Boolean {
-    for (permission in permissions) {
-        if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            return false
-        }
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        return true
+    } else {
+        val rationale: (String) -> Boolean = { shouldShowRequestPermissionRationale(it) }
+        return launchPermissionRequest(
+            requireContext(),
+            requireActivity().activityResultRegistry,
+            arrayOf(*permissions),
+            rationale, grantedCallback, deniedCallback, options
+        )
     }
-    return true
 }
 
-fun Fragment.checkSelfPermissions(vararg permissions: String): Boolean {
-    for (permission in permissions) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-            return false
-        }
+@RequiresApi(Build.VERSION_CODES.R)
+fun FragmentActivity.runWithStorageManagePermission(action: () -> Unit) {
+    if (Environment.isExternalStorageManager()) {
+        action.invoke()
+    } else {
+        launchStorageManagePermessionRequest(activityResultRegistry, { if (it) action.invoke() })
     }
-    return true
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun Fragment.runWithStorageManagePermission(action: () -> Unit) {
+    if (Environment.isExternalStorageManager()) {
+        action.invoke()
+    } else {
+        launchStorageManagePermessionRequest(requireActivity().activityResultRegistry, { if (it) action.invoke() })
+    }
 }
 
 
-private fun runWithPermissionsHandler(
-    target: Any?,
-    permissions: Array<out String>,
-    grantedCallback: (Uri?) -> Unit,
+fun AppCompatActivity.getDocumentTreeUri(callback: (Uri?) -> Unit) {
+    launchDocumentTreeUri(activityResultRegistry, callback)
+}
+
+fun Fragment.getDocumentTreeUri(callback: (Uri?) -> Unit) {
+    launchDocumentTreeUri(requireActivity().activityResultRegistry, callback)
+}
+
+
+private fun launchPermissionRequest(
+    context: Context,
+    registry: ActivityResultRegistry,
+    permissions: Array<String>,
+    rationale: (String) -> Boolean,
+    grantedCallback: () -> Unit,
     deniedCallback: () -> Unit,
     options: PermissionsOptions
 ): Boolean {
 
-    if (target !is AppCompatActivity && target !is Fragment) {
-        throw IllegalStateException("Found " + target?.javaClass?.canonicalName + " : No support from any classes other than AppCompatActivity/Fragment")
-    }
-
-    val context: Context = (if (target is Fragment) target.requireContext() else target as Context)
-
-    if (context.checkSelfPermissions(*permissions)) {
-        grantedCallback.invoke(null)
+    if (context.isGrantedPermission(*permissions)) {
+        grantedCallback.invoke()
         return true
 
     } else {
-        var permissionCheckerFragment = when (target) {
-            is AppCompatActivity -> target.supportFragmentManager.findFragmentByTag(PermissionCheckerFragment::class.java.canonicalName) as PermissionCheckerFragment?
-            is Fragment -> target.childFragmentManager.findFragmentByTag(PermissionCheckerFragment::class.java.canonicalName) as PermissionCheckerFragment?
-            else -> null
+        val permissionRequest = PermissionsRequest(
+            arrayOf(*permissions)
+        ).apply {
+            handleRationale = options.handleRationale
+            handlePermanentlyDenied = options.handlePermanentlyDenied
+            rationaleMessage = if (options.rationaleMessage.isBlank())
+                "These permissions are required to perform this feature. Please allow us to use this feature. "
+            else
+                options.rationaleMessage
+            permanentlyDeniedMessage = if (options.permanentlyDeniedMessage.isEmpty())
+                "Some permissions are permanently denied which are required to perform this operation. Please open app settings to grant these permissions."
+            else
+                options.permanentlyDeniedMessage
+            rationaleMethod = options.rationaleMethod
+            permanentDeniedMethod = options.permanentDeniedMethod
+            permissionsDeniedMethod = options.permissionsDeniedMethod
         }
 
-        if (permissionCheckerFragment == null) {
-            permissionCheckerFragment = PermissionCheckerFragment.newInstance()
-            when (target) {
-                is AppCompatActivity -> {
-                    target.supportFragmentManager.beginTransaction().apply {
-                        add(permissionCheckerFragment, PermissionCheckerFragment::class.java.canonicalName)
-                        commit()
-                    }
-                    target.supportFragmentManager.executePendingTransactions()
-                }
-                is Fragment -> {
-                    target.childFragmentManager.beginTransaction().apply {
-                        add(permissionCheckerFragment, PermissionCheckerFragment::class.java.canonicalName)
-                        commit()
-                    }
-                    target.childFragmentManager.executePendingTransactions()
-                }
+        val permissionLauncher = getPermissionRequestLauncher(registry) { permissionResult ->
+            handlePermissionResult(permissionResult, permissionRequest, rationale) {
+                if (it) grantedCallback.invoke() else deniedCallback.invoke()
             }
         }
 
-        permissionCheckerFragment.setListener(object : PermissionCheckerFragment.PermissionsCallback {
-            override fun onPermissionsGranted(permissionsRequest: PermissionsRequest?, uri: Uri?) {
-                kotlin.runCatching { grantedCallback.invoke(uri) }
+        val appSettingsLauncher = getAppSettingsLauncher(registry) {
+            if (it?.resultCode == Activity.RESULT_OK) {
+                permissionLauncher.launch(permissions)
             }
+        }
 
-            override fun onPermissionsDenied(permissionsRequest: PermissionsRequest?) {
-                kotlin.runCatching { deniedCallback.invoke() }
-            }
-        })
+        permissionRequest.permissionLauncher = permissionLauncher
+        permissionRequest.appSettingLauncher = appSettingsLauncher
 
-        val permissionRequest = PermissionsRequest(permissionCheckerFragment, arrayOf(*permissions))
-        permissionRequest.handleRationale = options.handleRationale
-        permissionRequest.handlePermanentlyDenied = options.handlePermanentlyDenied
-        permissionRequest.rationaleMessage = if (options.rationaleMessage.isBlank())
-            "These permissions are required to perform this feature. Please allow us to use this feature. "
-        else
-            options.rationaleMessage
-        permissionRequest.permanentlyDeniedMessage = if (options.permanentlyDeniedMessage.isEmpty())
-            "Some permissions are permanently denied which are required to perform this operation. Please open app settings to grant these permissions."
-        else
-            options.permanentlyDeniedMessage
-        permissionRequest.rationaleMethod = options.rationaleMethod
-        permissionRequest.permanentDeniedMethod = options.permanentDeniedMethod
-        permissionRequest.permissionsDeniedMethod = options.permissionsDeniedMethod
-
-        permissionCheckerFragment.setRequestPermissionsRequest(permissionRequest)
-
-        permissionCheckerFragment.requestPermissionsFromUser()
+        permissionLauncher.launch(permissions)
 
         return false
     }
 
 }
+
+private fun getAppSettingsLauncher(
+    registry: ActivityResultRegistry,
+    onActivityResult: (ActivityResult?) -> Unit
+): ActivityResultLauncher<Intent> {
+    return registry.register(
+        APP_SETTINGS_KEY,
+        ActivityResultContracts.StartActivityForResult(),
+        onActivityResult
+    )
+}
+
+private fun getPermissionRequestLauncher(
+    registry: ActivityResultRegistry,
+    onActivityResult: (Map<String, Boolean>) -> Unit
+): ActivityResultLauncher<Array<String>> {
+    return registry.register(
+        PERMISSION_KEY,
+        ActivityResultContracts.RequestMultiplePermissions(),
+        onActivityResult
+    )
+}
+
+private fun handlePermissionResult(
+    permissionResult: Map<String, Boolean>,
+    permissionsRequest: PermissionsRequest,
+    rationale: (String) -> Boolean,
+    result: (isGranted: Boolean) -> Unit
+) {
+
+    if (permissionResult.isEmpty()) {
+        return
+    }
+
+    val deniedMap = permissionResult.filterValues { it.not() }
+
+    if (deniedMap.isEmpty()) {
+        permissionsRequest.deniedPermissions = emptyArray()
+        result.invoke(true)
+
+    } else {
+        result.invoke(false)
+
+        val deniedPermissions = deniedMap.keys.toTypedArray()
+        permissionsRequest.deniedPermissions = deniedPermissions
+
+        var shouldShowRationale = true
+        var isPermanentlyDenied = false
+        for (deniedPermission in deniedPermissions) {
+            if (!rationale(deniedPermission)) {
+                shouldShowRationale = false
+                isPermanentlyDenied = true
+                break
+            }
+        }
+
+        if (permissionsRequest.handlePermanentlyDenied == true && isPermanentlyDenied) {
+            permissionsRequest.permanentDeniedMethod?.invoke(permissionsRequest)
+            return
+        }
+
+        // if should show rationale dialog
+        if (permissionsRequest.handleRationale == true && shouldShowRationale) {
+            permissionsRequest.rationaleMethod?.invoke(permissionsRequest)
+            return
+        }
+    }
+}
+
+
+private fun launchDocumentTreeUri(registry: ActivityResultRegistry, callback: (Uri?) -> Unit) {
+    registry.register(DOCUMENT_TREE_KEY, ActivityResultContracts.OpenDocument(), callback)
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+private fun launchStorageManagePermessionRequest(
+    registry: ActivityResultRegistry,
+    callback: (Boolean) -> Unit
+) {
+    registry.register(STORAGE_MANAGE_KEY, StorageManageContract(), callback)
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+private class StorageManageContract : ActivityResultContract<Any?, Boolean>() {
+    override fun createIntent(context: Context, input: Any?): Intent {
+        return Intent().setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+        return Environment.isExternalStorageManager()
+    }
+}
+
+
+private const val APP_SETTINGS_KEY = ".APP_SETTINGS_KEY"
+private const val PERMISSION_KEY = ".PERMISSION_KEY"
+private const val DOCUMENT_TREE_KEY = ".DOCUMENT_TREE_KEY"
+private const val STORAGE_MANAGE_KEY = ".STORAGE_MANAGE_KEY"

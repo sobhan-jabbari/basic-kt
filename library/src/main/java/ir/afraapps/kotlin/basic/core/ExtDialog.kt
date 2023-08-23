@@ -9,6 +9,7 @@ import androidx.annotation.*
 import androidx.core.text.layoutDirection
 import ir.afraapps.kotlin.basic.R
 import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.toast
 import java.util.*
 
 /**
@@ -31,8 +32,8 @@ fun Dialog.getFont(@FontRes fontRes: Int): Typeface? = context.getFont(fontRes)
 
 fun Dialog.getDrawableCompat(@DrawableRes id: Int): Drawable? = context.getDrawableCompat(id)
 
-fun Dialog.showToast(@StringRes restId: Int) = context.showToast(restId)
-fun Dialog.showToast(message: String) = context.showToast(message)
+fun Dialog.toast(@StringRes restId: Int) = context.toast(restId)
+fun Dialog.toast(message: String) = context.toast(message)
 
 
 fun Dialog.isLocaleRTL(): Boolean = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL

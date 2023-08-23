@@ -1,12 +1,9 @@
 package ir.afraapps.kotlin.basic.core
 
-import android.content.Context
+import android.content.res.Resources
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.displayMetrics
-import org.jetbrains.anko.sp
 import java.util.*
 import kotlin.math.abs
 
@@ -16,6 +13,51 @@ import kotlin.math.abs
  * Created by Ali Jabbari on 5/21/20.
  */
 
+
+fun Long.toDurationMillisFormat(): String {
+    val pTime = abs(this)
+    val millis = pTime % 1000
+    val second = pTime / 1000 % 60
+    val minute = pTime / 60000 % 60
+    val hours = pTime / 3600000 % 24
+
+    val sb = StringBuilder()
+    if (hours > 0) {
+        sb.append("${hours}h")
+    }
+    if (minute > 0) {
+        if (sb.isNotEmpty()) {
+            sb.append(" ")
+        }
+        sb.append("${minute}m")
+    }
+    if (second > 0) {
+        if (sb.isNotEmpty()) {
+            sb.append(" ")
+        }
+        sb.append("${second}s")
+    }
+    if (millis > 0) {
+        if (sb.isNotEmpty()) {
+            sb.append(" ")
+        }
+        sb.append("${millis}ms")
+    }
+    return sb.toString()
+}
+
+fun Long.toTimeMillisFormat(): String {
+    val isNegative = this < 0
+    val pTime = abs(this)
+    val millis = pTime % 1000
+    val second = pTime / 1000 % 60
+    val minute = pTime / 60000 % 60
+    val hours = pTime / 3600000 % 24
+    return if (isNegative)
+        String.format(Locale.ENGLISH, "-%02d:%02d:%02d:%2d", hours, minute, second, millis)
+    else
+        String.format(Locale.ENGLISH, "%02d:%02d:%02d:%2d", hours, minute, second, millis)
+}
 
 fun Long.toTimeFormat(): String {
     val isNegative = this < 0
@@ -82,36 +124,9 @@ fun @receiver:ColorInt Int.brighten(@FloatRange(from = 0.0, to = 1.0) level: Flo
     })
 }
 
-fun Int.toDip(context: Context): Int {
-    return context.dip(this)
-}
-
-fun Int.toDipf(context: Context): Float {
-    return context.dipf(this)
-}
-
-fun Float.toDip(context: Context): Int {
-    return context.dip(this)
-}
-
-fun Float.toDipf(context: Context): Float {
-    return context.dipf(this)
-}
-
-fun Int.toSp(context: Context): Int {
-    return context.sp(this)
-}
-
-fun Int.toSpf(context: Context): Float {
-    return context.spf(this)
-}
-
-fun Float.toSp(context: Context): Int {
-    return context.sp(this)
-}
-
-fun Float.toSpf(context: Context): Float {
-    return context.spf(this)
-}
+val Number.dpf: Float get() = this.toFloat() * Resources.getSystem().displayMetrics.density
+val Number.spf: Float get() = this.toFloat() * Resources.getSystem().displayMetrics.scaledDensity
+val Number.dp: Int get() = dpf.toInt()
+val Number.sp: Int get() = spf.toInt()
 
 fun Boolean.toInt(): Int = if (this) 1 else 0

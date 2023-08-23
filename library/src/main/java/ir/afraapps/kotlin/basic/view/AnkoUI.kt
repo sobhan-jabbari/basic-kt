@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
 import ir.afraapps.kotlin.basic.R
+import ir.afraapps.kotlin.basic.util.property.IntProperty
 import org.jetbrains.anko.colorAttr
 
 /**
@@ -15,16 +16,24 @@ import org.jetbrains.anko.colorAttr
 
 abstract class AnkoUI(
     val context: Context,
-    val colorPrimary: Int = context.colorAttr(R.attr.colorPrimary),
-    val colorPrimaryDark: Int = context.colorAttr(R.attr.colorPrimaryDark)
+    primaryColor: Int = context.colorAttr(R.attr.colorPrimary),
+    primaryColorDark: Int = context.colorAttr(R.attr.colorPrimaryDark)
 ) {
+
+    val colorPrimaryProperty = IntProperty(primaryColor)
+    val colorPrimaryDarkProperty = IntProperty(primaryColorDark)
+    val colorPrimaryLightProperty = IntProperty(primaryColorDark)
+
+    var colorPrimary: Int by colorPrimaryProperty
+    var colorPrimaryDark: Int by colorPrimaryDarkProperty
+    var colorPrimaryLight: Int by colorPrimaryLightProperty
 
     abstract val root: View
 
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : AnkoUI> bind(activity: Activity): T {
-        activity.setContentView(root)
+    fun <T : AnkoUI> bind(): T {
+        (context as? Activity)?.setContentView(root)
         return this as T
     }
 
