@@ -87,8 +87,26 @@ publishing {
         }*/
         }
     }
+
+    repositories {
+        maven {
+            name = "afraapps"
+            url = uri("${project.buildDir}/afraapps")
+        }
+    }
+
 }
 // }
+
+tasks.register<Zip>("generateRepo") {
+    val publishTask = tasks.named(
+        "publishReleasePublicationToMyrepoRepository",
+        PublishToMavenRepository::class.java)
+    from(publishTask.map { it.repository.url })
+    into("basic-kt")
+    archiveFileName.set("basic-kt.zip")
+}
+
 
 
 dependencies {
