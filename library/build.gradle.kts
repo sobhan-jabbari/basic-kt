@@ -12,7 +12,7 @@ version = appVersionName
 
 
 android {
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 21
@@ -31,12 +31,6 @@ android {
         }
     }
 
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -48,65 +42,54 @@ android {
 }
 
 // test: ./gradlew clean -xtest -xlint assemble publishToMavenLocal
+// test: ./gradlew clean -xtest -xlint assemble publishReleasePublicationToMavenLocal
 
-// afterEvaluate {
-publishing {
-    publications {
-        // Creates a Maven publication called "release".
-        create<MavenPublication>("release") {
-            groupId = project.group as String
-            artifactId = project.name
-            version = project.version as String
 
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
                 from(components["release"])
-            }
+                groupId = project.group as String
+                artifactId = project.name
+                version = project.version as String
 
-            /*pom {
-            name = project.name
-            description = 'The basic tools for kotlin android'
-            url = "https://github.com/sobhan-jabbari/${project.name}"
 
-            licenses {
-                license {
-                    name = 'The Apache License, Version 2.0'
-                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                pom {
+                    name.set(project.name)
+                    description.set("The basic tools for kotlin android")
+                    url.set("https://github.com/sobhan-jabbari/${project.name}")
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("sobhan-jabbari")
+                            name.set("Ali Jabbari")
+                            email.set("sobhan.jabbari@gmail.com")
+                        }
+                    }
+
+                    scm {
+                        connection.set("scm:git:github.com/sobhan-jabbari/${project.name}.git")
+                        url.set("https://github.com/sobhan-jabbari/${project.name}")
+                    }
                 }
             }
-            developers {
-                developer {
-                    id = 'sobhan-jabbari'
-                    name = 'Ali Jabbari'
-                    email = 'sobhan.jabbari@gmail.com'
-                }
-            }
-            scm {
-                connection = "scm:git:github.com/sobhan-jabbari/${project.name}.git"
-                url = "https://github.com/sobhan-jabbari/${project.name}"
-            }
-        }*/
         }
-    }
 
-    repositories {
-        maven {
-            name = "afraapps"
-            url = uri("${project.buildDir}/afraapps")
+        repositories {
+            maven {
+                name = "afraapps"
+                url = uri("${project.buildDir}/afraapps")
+            }
         }
+
     }
-
 }
-// }
-
-tasks.register<Zip>("generateRepo") {
-    val publishTask = tasks.named(
-        "publishReleasePublicationToMyrepoRepository",
-        PublishToMavenRepository::class.java)
-    from(publishTask.map { it.repository.url })
-    into("basic-kt")
-    archiveFileName.set("basic-kt.zip")
-}
-
 
 
 dependencies {
