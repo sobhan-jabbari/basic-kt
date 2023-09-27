@@ -27,8 +27,8 @@ task("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
 
-val appVersionCode by extra(1020)
-val appVersionName by extra("1.0.20")
+val appVersionCode by extra(2000)
+val appVersionName by extra("2.0.0")
 
 
 task("backup", Zip::class) {
