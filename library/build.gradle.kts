@@ -84,7 +84,7 @@ afterEvaluate {
         repositories {
             maven {
                 name = "afraapps"
-                url = uri("${project.buildDir}/afraapps")
+                url = uri("${project.layout.buildDirectory}/afraapps")
             }
         }
 
@@ -104,10 +104,10 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
 
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.paging:paging-runtime-ktx:3.2.0")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.slidingpanelayout:slidingpanelayout:1.2.0")
 
     val room_version = "2.5.2"
