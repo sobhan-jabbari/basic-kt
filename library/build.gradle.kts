@@ -12,7 +12,7 @@ version = appVersionName
 
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -31,13 +31,25 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
     lint {
         abortOnError = false
     }
     namespace = "ir.afraapps.kotlin.basic"
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 
 }
 
@@ -95,8 +107,6 @@ afterEvaluate {
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
 
-    // implementation 'org.jetbrains.anko:anko-sdk25:0.10.8'
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.appcompat:appcompat-resources:1.6.1")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
@@ -110,8 +120,7 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.slidingpanelayout:slidingpanelayout:1.2.0")
 
-    val room_version = "2.5.2"
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-ktx:2.5.2")
 
 }
 
