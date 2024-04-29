@@ -1,0 +1,274 @@
+[versions]
+agp = "8.3.2"
+alefbaziFirstgrade = "1.0.4"
+alefbaziPreschool = "1.0.4"
+android-compileSdk = "34"
+android-minSdk = "21"
+android-targetSdk = "34"
+androidx-activityCompose = "1.9.0"
+androidx-activityKtx = "1.9.0"
+androidx-appcompat = "1.6.1"
+androidx-constraintlayout = "2.1.4"
+androidx-recyclerview = "1.3.2"
+androidx-cardview = "1.0.0"
+androidx-viewpager2 = "1.0.0"
+androidx-swiperefreshlayout = "1.1.0"
+androidx-preference-ktx = "1.2.1"
+androidx-fragment-ktx = "1.6.2"
+androidx-lifecycle = "2.7.0"
+androidx-room = "2.6.1"
+androidx-paging = "3.2.1"
+androidx-slidingpanelayout = "1.2.0"
+androidx-webkit = "1.10.0"
+androidx-browser = "1.8.0"
+androidx-camera = "1.3.3"
+androidx-media3 = "1.3.1"
+androidx-palette = "1.0.0"
+androidx-core-ktx = "1.13.0"
+androidx-espresso-core = "3.5.1"
+androidx-material = "1.11.0"
+androidx-test-core = "1.5.0"
+androidx-test-junit = "1.1.5"
+androidx-test-runner = "1.5.2"
+khandariFirstgrade = "1.0.5"
+khandariPreschool = "1.0.5"
+alefbaGames = "1.0.1"
+kotlinx-coroutines = "1.8.0"
+kotlinx-serialization = "1.6.2"
+compose = "1.6.6"
+compose-material3 = "1.2.1"
+compose-plugin = "1.6.2"
+desugar_jdk_libs = "2.0.4"
+ktor = "2.3.9"
+okhttp3 = "4.12.0"
+jsoup = "1.16.1"
+emoji = "0.18.0"
+coil = "2.6.0"
+flexbox = "3.0.0"
+google-barcode = "17.2.0"
+app-update = "2.1.0"
+firebase = "23.4.1"
+play-services = "21.1.0"
+facebook = "16.1.3"
+markwon = "4.6.2"
+pdfview = "3.2.0-beta.3"
+readium = "2.4.0"
+poolakey = "2.1.0"
+billing_google = "6.2.1"
+billing_myket = "1.6"
+afraapps-basic-kt = "2.0.1"
+afraapps-jcalendar = "1.2.7"
+afraapps-bottombar = "1.2.7"
+afraapps-tagview = "1.1.10"
+afraapps-number_picker = "1.1.26"
+afraapps-round_drawable = "1.0.4"
+afraapps-form_builder = "1.1.39"
+afraapps-cropiew = "1.0.0"
+afraapps-progressbar = "1.0.1"
+afraapps-listview = "1.0.1"
+dabestaniha-basic = "1.0.0"
+dabestaniha-data = "1.0.0"
+dabestaniha-core-ui-def = "1.0.1"
+dabestaniha-widget = "1.0.0"
+dabestaniha-barcodescanner = "1.0.2"
+dabestaniha-qrcodescanner = "1.0.2"
+dabestaniha-markdown = "1.0.6"
+dabestaniha-recorder = "1.0.1"
+dabestaniha-player-def = "1.0.0"
+dabestaniha-crystalrangeseekbar = "1.0.0"
+dabestaniha-report-data = "1.0.0"
+dabestaniha-report-ui-def = "1.0.0"
+dabestaniha-pdf-data = "1.0.0"
+dabestaniha-pdf-ui-def = "1.0.0"
+dabestaniha-comment-data = "1.0.0"
+dabestaniha-comment-ui-def = "1.0.0"
+litr = "1.5.5"
+pinview = "1.4.4"
+viewpager_indicator = "1.2.1"
+segmented_progressbar = "0.0.3"
+sqlDelight = "2.0.1"
+junit = "4.13.2"
+google_service = "4.4.1"
+ksp = "1.9.23-1.0.19"
+kotlin = "1.9.23"
+workRuntimeKtx = "2.9.0"
+kotlinCompilerExtension = "1.5.11"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+desugar_jdk_libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidx-test-core" }
+androidx-test-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidx-test-junit" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
+
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-appcompat-resources = { group = "androidx.appcompat", name = "appcompat-resources", version.ref = "androidx-appcompat" }
+androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "androidx-cardview" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference-ktx" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment-ktx" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activityKtx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "androidx-room" }
+
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "androidx-paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging" }
+androidx-slidingpanelayout = { module = "androidx.slidingpanelayout:slidingpanelayout", version.ref = "androidx-slidingpanelayout" }
+
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
+
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "androidx-camera" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "androidx-camera" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx-camera" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "androidx-camera" }
+
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-ima = { module = "androidx.media3:media3-exoplayer-ima", version.ref = "androidx-media3" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "androidx-media3" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "androidx-media3" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
+androidx-media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "androidx-media3" }
+androidx-media3-transformer = { module = "androidx.media3:media3-transformer", version.ref = "androidx-media3" }
+androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "androidx-media3" }
+androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "androidx-media3" }
+androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "androidx-media3" }
+
+androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "androidx-palette" }
+
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
+
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+coil-kt = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+emoji-google = { module = "com.vanniktech:emoji-google", version.ref = "emoji" }
+
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+google-barcode = { module = "com.google.mlkit:barcode-scanning", version.ref = "google-barcode" }
+
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebase" }
+play-app-update = { module = "com.google.android.play:app-update", version.ref = "app-update" }
+play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "app-update" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "play-services" }
+facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebook" }
+
+markwon-core = { module = "io.noties.markwon:core", version.ref = "markwon" }
+markwon-html = { module = "io.noties.markwon:html", version.ref = "markwon" }
+markwon-image = { module = "io.noties.markwon:image", version.ref = "markwon" }
+markwon-image-coil = { module = "io.noties.markwon:image-coil", version.ref = "markwon" }
+markwon-table = { module = "io.noties.markwon:ext-tables", version.ref = "markwon" }
+markwon-table-recycler = { module = "io.noties.markwon:recycler-table", version.ref = "markwon" }
+markwon-inlineParser = { module = "io.noties.markwon:inline-parser", version.ref = "markwon" }
+markwon-linkify = { module = "io.noties.markwon:linkify", version.ref = "markwon" }
+markwon-latex = { module = "io.noties.markwon:ext-latex", version.ref = "markwon" }
+
+pdf-viewer = { module = "com.github.mhiew:android-pdf-viewer", version.ref = "pdfview" }
+
+readium-shared = { module = "org.readium.kotlin-toolkit:readium-shared", version.ref = "readium" }
+readium-streamer = { module = "org.readium.kotlin-toolkit:readium-streamer", version.ref = "readium" }
+
+sqlDelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+sqlDelight-coroutine = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqlDelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqlDelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
+sqlDelight-JVM = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+
+poolakey = { module = "com.github.cafebazaar.Poolakey:poolakey", version.ref = "poolakey" }
+billing-google = { module = "com.android.billingclient:billing-ktx", version.ref = "billing_google" }
+billing-myket = { module = "com.github.myketstore:myket-billing-client", version.ref = "billing_myket" }
+
+afraapps-basic-kt = { module = "com.github.sobhan-jabbari:basic-kt", version.ref = "afraapps-basic-kt" }
+afraapps-jcalendar = { module = "com.github.sobhan-jabbari:jcalendar", version.ref = "afraapps-jcalendar" }
+afraapps-bottombar = { module = "com.github.sobhan-jabbari:bottombar", version.ref = "afraapps-bottombar" }
+afraapps-tagview = { module = "com.github.sobhan-jabbari:tagview", version.ref = "afraapps-tagview" }
+afraapps-number-picker = { module = "com.github.sobhan-jabbari:number-picker", version.ref = "afraapps-number_picker" }
+afraapps-roundDrawable = { module = "com.github.sobhan-jabbari:round-drawable", version.ref = "afraapps-round_drawable" }
+afraapps-form-builder = { module = "com.github.afraapps:form-builder", version.ref = "afraapps-form_builder" }
+afraapps-cropiew = { module = "com.github.afraapps:cropiew", version.ref = "afraapps-cropiew" }
+afraapps-progressbar = { module = "com.github.afraapps:progressbar", version.ref = "afraapps-progressbar" }
+afraapps-listview = { module = "com.github.afraapps:listview", version.ref = "afraapps-listview" }
+
+dabestaniha-basic = { module = "com.dabestaniha:basic", version.ref = "dabestaniha-basic" }
+dabestaniha-data = { module = "com.dabestaniha:data", version.ref = "dabestaniha-data" }
+dabestaniha-core-ui-def = { module = "com.dabestaniha:core-ui-def", version.ref = "dabestaniha-core-ui-def" }
+dabestaniha-widget = { module = "com.dabestaniha:widget", version.ref = "dabestaniha-widget" }
+dabestaniha-barcodescanner = { module = "com.dabestaniha:barcodescanner", version.ref = "dabestaniha-barcodescanner" }
+dabestaniha-qrcodescanner = { module = "com.dabestaniha:qrcodescanner", version.ref = "dabestaniha-qrcodescanner" }
+dabestaniha-markdown = { module = "com.dabestaniha:markdown", version.ref = "dabestaniha-markdown" }
+dabestaniha-recorder = { module = "com.dabestaniha:recorder", version.ref = "dabestaniha-recorder" }
+dabestaniha-player-def = { module = "com.dabestaniha:player", version.ref = "dabestaniha-player-def" }
+dabestaniha-crystalrangeseekbar = { module = "com.dabestaniha:crystalrangeseekbar", version.ref = "dabestaniha-crystalrangeseekbar" }
+dabestaniha-report-data = { module = "com.dabestaniha:report-data", version.ref = "dabestaniha-report-data" }
+dabestaniha-report-ui-def = { module = "com.dabestaniha:report-ui-def", version.ref = "dabestaniha-report-ui-def" }
+dabestaniha-reader-pdf-data = { module = "com.dabestaniha:pdf-data", version.ref = "dabestaniha-pdf-data" }
+dabestaniha-reader-pdf-ui-def = { module = "com.dabestaniha:pdf-ui-def", version.ref = "dabestaniha-pdf-ui-def" }
+dabestaniha-comment-data = { module = "com.dabestaniha:comment-data", version.ref = "dabestaniha-comment-data" }
+dabestaniha-comment-ui-def = { module = "com.dabestaniha:comment-ui-default", version.ref = "dabestaniha-comment-ui-def" }
+
+litr = { module = "com.linkedin.android.litr:litr", version.ref = "litr" }
+pinview = { module = "io.github.chaosleung:pinview", version.ref = "pinview" }
+viewpager_indicator = { module = "com.github.zhpanvip:viewpagerindicator", version.ref = "viewpager_indicator" }
+segmented_progressbar = { module = "com.github.TOrnelas:SegmentedProgressBar", version.ref = "segmented_progressbar" }
+
+game-alefbazi-preschool = { module = "com.dabestaniha.game:alefbazi-preschool", version.ref = "alefbaziPreschool" }
+game-khandari-preschool = { module = "com.dabestaniha.game:khandari-preschool", version.ref = "khandariPreschool" }
+game-alefbazi-firstgrade = { module = "com.dabestaniha.game:alefbazi-firstgrade", version.ref = "alefbaziFirstgrade" }
+game-khandari-firstgrade = { module = "com.dabestaniha.game:khandari-firstgrade", version.ref = "khandariFirstgrade" }
+game-alefba-games = { module = "com.dabestaniha.game:alefba-games", version.ref = "alefbaGames" }
+
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+googleService = { id = "com.google.gms.google-services", version.ref = "google_service" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+

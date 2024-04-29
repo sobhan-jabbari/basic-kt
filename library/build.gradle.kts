@@ -92,13 +92,6 @@ afterEvaluate {
             }
         }
 
-        repositories {
-            maven {
-                name = "afraapps"
-                url = uri("${project.layout.buildDirectory}/afraapps")
-            }
-        }
-
     }
 }
 
