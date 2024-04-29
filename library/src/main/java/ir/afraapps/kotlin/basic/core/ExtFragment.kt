@@ -8,13 +8,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.annotation.*
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
 import androidx.core.text.layoutDirection
 import androidx.fragment.app.Fragment
-import ir.afraapps.kotlin.basic.R
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.inputMethodManager
-import java.util.*
+import java.util.Locale
 
 /**
  * In the name of Allah
@@ -45,7 +47,7 @@ fun <I, O> Fragment.registerForActivityResult(
 fun Fragment.getColorStateListCompat(@ColorRes resId: Int): ColorStateList? = requireContext().getColorStateListCompat(resId)
 
 @ColorInt
-fun Fragment.getColorPrimary(): Int = requireContext().colorAttr(R.attr.colorPrimary)
+fun Fragment.getColorPrimary(): Int = requireContext().colorAttr(androidx.appcompat.R.attr.colorPrimary)
 fun Fragment.getFont(@FontRes fontRes: Int): Typeface? = requireContext().getFont(fontRes)
 
 fun Fragment.getDrawableCompat(@DrawableRes id: Int): Drawable? = requireContext().getDrawableCompat(id)

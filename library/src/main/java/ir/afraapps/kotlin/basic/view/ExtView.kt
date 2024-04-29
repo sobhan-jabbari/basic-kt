@@ -1,7 +1,6 @@
 package ir.afraapps.kotlin.basic.view
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.view.View
@@ -10,21 +9,21 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import androidx.annotation.*
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.FontRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ColorStateListInflaterCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.TextUtilsCompat
-import androidx.core.text.layoutDirection
 import androidx.core.view.forEach
 import com.google.android.material.textfield.TextInputLayout
 import ir.afraapps.kotlin.basic.core.color
-import ir.afraapps.kotlin.basic.core.color
 import org.jetbrains.anko.inputMethodManager
 import org.jetbrains.anko.internals.AnkoInternals
-import java.util.*
 
 /**
  * In the name of Allah
@@ -42,10 +41,7 @@ fun View.closeSoftKeyboard() {
 
 fun EditText.showSoftKeyboard() {
     requestFocus()
-    context.inputMethodManager.showSoftInput(
-        this,
-        InputMethodManager.SHOW_FORCED
-    )
+    context.inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_FORCED)
 }
 
 

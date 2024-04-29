@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("maven-publish")
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinAndroid)
+    `maven-publish`
 }
 
 val appVersionCode: Int by rootProject.extra
@@ -12,7 +12,7 @@ version = appVersionName
 
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -104,22 +104,19 @@ afterEvaluate {
 
 
 dependencies {
-    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.appcompat.resources)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.fragment.ktx)
 
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.appcompat:appcompat-resources:1.6.1")
-    implementation("androidx.recyclerview:recyclerview:1.3.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.slidingpanelayout)
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-    implementation("androidx.slidingpanelayout:slidingpanelayout:1.2.0")
-
-    implementation("androidx.room:room-ktx:2.5.2")
-
+    implementation(libs.androidx.room.ktx)
 }
 

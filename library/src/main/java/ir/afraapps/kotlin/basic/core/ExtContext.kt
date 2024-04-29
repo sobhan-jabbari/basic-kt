@@ -8,16 +8,17 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.view.View
 import android.view.WindowInsets
-import androidx.annotation.*
+import androidx.annotation.AnyRes
+import androidx.annotation.AttrRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
+import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
-import ir.afraapps.kotlin.basic.R
 import org.jetbrains.anko.dip
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.storageManager
 import org.jetbrains.anko.windowManager
 
@@ -36,7 +37,7 @@ fun Context.resourceId(@StyleRes styleRes: Int, @AttrRes attrRes: Int): Int {
 }
 
 fun Context.font(@StyleRes styleRes: Int): Typeface? {
-    val resId = resourceId(styleRes, R.attr.fontFamily)
+    val resId = resourceId(styleRes, androidx.appcompat.R.attr.fontFamily)
     if (resId > 0) return getFont(resId)
     return null
 }

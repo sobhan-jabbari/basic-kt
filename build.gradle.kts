@@ -1,34 +1,19 @@
-import java.util.Date
-import java.text.SimpleDateFormat
 import com.google.common.base.CaseFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:8.0.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-        jcenter()
-    }
+plugins {
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.kotlinAndroid) apply false
 }
 
 
 task("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
-val appVersionCode by extra(2001)
-val appVersionName by extra("2.0.1")
+val appVersionCode by extra(2002)
+val appVersionName by extra("2.0.2")
 
 
 task("backup", Zip::class) {
