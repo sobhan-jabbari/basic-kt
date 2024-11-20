@@ -10,8 +10,9 @@ abstract class BaseProperty<T>(initValue: T) {
 
     var value: T = initValue
         set(value) {
-            firePropertyChange(field, value)
+            val oldValue = field
             field = value
+            firePropertyChange(oldValue, value)
         }
 
 
