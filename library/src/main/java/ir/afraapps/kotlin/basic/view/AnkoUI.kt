@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
-import ir.afraapps.kotlin.basic.util.property.IntProperty
-import org.jetbrains.anko.colorAttr
 
 /**
  * In the name of Allah
@@ -13,22 +11,9 @@ import org.jetbrains.anko.colorAttr
  * Created by Ali Jabbari on 10/16/19.
  */
 
-abstract class AnkoUI(
-    val context: Context,
-    primaryColor: Int = context.colorAttr(androidx.appcompat.R.attr.colorPrimary),
-    primaryColorDark: Int = context.colorAttr(androidx.appcompat.R.attr.colorPrimaryDark)
-) {
-
-    val colorPrimaryProperty = IntProperty(primaryColor)
-    val colorPrimaryDarkProperty = IntProperty(primaryColorDark)
-    val colorPrimaryLightProperty = IntProperty(primaryColorDark)
-
-    var colorPrimary: Int by colorPrimaryProperty
-    var colorPrimaryDark: Int by colorPrimaryDarkProperty
-    var colorPrimaryLight: Int by colorPrimaryLightProperty
+abstract class AnkoUI(val context: Context) {
 
     abstract val root: View
-
 
     @Suppress("UNCHECKED_CAST")
     fun <T : AnkoUI> bind(): T {

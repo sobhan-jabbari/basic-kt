@@ -103,6 +103,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.material)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
